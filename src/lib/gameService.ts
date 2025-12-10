@@ -56,6 +56,16 @@ interface AssignmentRow {
   created_at: string;
 }
 
+interface MessageRow {
+  id: string;
+  game_id: string;
+  player_id: string;
+  sender: 'player' | 'admin';
+  text: string;
+  read: boolean;
+  created_at: string;
+}
+
 // Generate a random game code
 export function generateGameCode(): string {
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -432,6 +442,134 @@ export function subscribeToAssignments(gameId: string, callback: () => void) {
   return () => {
     subscription.unsubscribe();
   };
+}
+
+// Messages
+export async function getMessages(gameId: string, playerId: string): Promise<{ id: string; sender: 'player' | 'admin'; text: string; createdAt: string }[]> {
+  if (!supabase) throw new Error('Supabase not configured');
+
+  const { data, error } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('game_id', gameId)
+    .eq('player_id', playerId)
+    .order('created_at', { ascending: true });
+
+  if (error) throw error;
+  return (data as MessageRow[]).map(m => ({
+    id: m.id,
+    sender: m.sender,
+    text: m.text,
+    createdAt: m.created_at,
+  }));
+}
+
+export async function sendMessage(gameId: string, playerId: string, sender: 'player' | 'admin', text: string): Promise<void> {
+  if (!supabase) throw new Error('Supabase not configured');
+
+  const { error } = await supabase
+    .from('messages')
+    .insert({ game_id: gameId, player_id: playerId, sender, text });
+
+  if (error) throw error;
+}
+
+export async function getPlayersWithUnreadMessages(gameId: string): Promise<{ playerId: string; playerName: string; unreadCount: number }[]> {
+  if (!supabase) throw new Error('Supabase not configured');
+
+  // Get all unread messages from players
+  const { data: messages, error: msgError } = await supabase
+    .from('messages')
+    .select('player_id')
+    .eq('game_id', gameId)
+    .eq('sender', 'player')
+    .eq('read', false);
+
+  if (msgError) throw msgError;
+
+  // Count unread per player
+  const countByPlayer: Record<string, number> = {};
+  for (const msg of (messages as { player_id: string }[])) {
+    countByPlayer[msg.player_id] = (countByPlayer[msg.player_id] || 0) + 1;
+  }
+
+  if (Object.keys(countByPlayer).length === 0) return [];
+
+  // Get player names
+  const playerIds = Object.keys(countByPlayer);
+  const { data: players, error: playerError } = await supabase
+    .from('players')
+    .select('id, name')
+    .in('id', playerIds);
+
+  if (playerError) throw playerError;
+
+  return (players as PlayerRow[]).map(p => ({
+    playerId: p.id,
+    playerName: p.name,
+    unreadCount: countByPlayer[p.id],
+  }));
+}
+
+export async function markMessagesAsRead(gameId: string, playerId: string): Promise<void> {
+  if (!supabase) throw new Error('Supabase not configured');
+
+  const { error } = await supabase
+    .from('messages')
+    .update({ read: true })
+    .eq('game_id', gameId)
+    .eq('player_id', playerId)
+    .eq('sender', 'player');
+
+  if (error) throw error;
+}
+
+export async function getAllConversations(gameId: string): Promise<{ playerId: string; playerName: string; lastMessage: string; lastMessageTime: string; unreadCount: number }[]> {
+  if (!supabase) throw new Error('Supabase not configured');
+
+  // Get all messages for the game
+  const { data: messages, error: msgError } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('game_id', gameId)
+    .order('created_at', { ascending: false });
+
+  if (msgError) throw msgError;
+
+  // Group by player, get last message and unread count
+  const playerData: Record<string, { lastMessage: MessageRow; unreadCount: number }> = {};
+  for (const msg of (messages as MessageRow[])) {
+    if (!playerData[msg.player_id]) {
+      playerData[msg.player_id] = { lastMessage: msg, unreadCount: 0 };
+    }
+    if (msg.sender === 'player' && !msg.read) {
+      playerData[msg.player_id].unreadCount++;
+    }
+  }
+
+  if (Object.keys(playerData).length === 0) return [];
+
+  // Get player names
+  const playerIds = Object.keys(playerData);
+  const { data: players, error: playerError } = await supabase
+    .from('players')
+    .select('id, name')
+    .in('id', playerIds);
+
+  if (playerError) throw playerError;
+
+  const playerNames: Record<string, string> = {};
+  for (const p of (players as PlayerRow[])) {
+    playerNames[p.id] = p.name;
+  }
+
+  return Object.entries(playerData).map(([playerId, data]) => ({
+    playerId,
+    playerName: playerNames[playerId] || 'Unknown',
+    lastMessage: data.lastMessage.text,
+    lastMessageTime: data.lastMessage.created_at,
+    unreadCount: data.unreadCount,
+  })).sort((a, b) => new Date(b.lastMessageTime).getTime() - new Date(a.lastMessageTime).getTime());
 }
 
 export { isSupabaseConfigured };

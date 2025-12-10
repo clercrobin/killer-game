@@ -9,7 +9,7 @@ export function HomePage() {
 
   const [mode, setMode] = useState<'choose' | 'create' | 'join'>('choose');
   const [gameCode, setGameCode] = useState('');
-  const [gameTitle, setGameTitle] = useState('Killer Game');
+  const [gameTitle, setGameTitle] = useState('');
   const [adminPassword, setAdminPassword] = useState('');
 
   const isConfigured = isSupabaseConfigured();
@@ -39,10 +39,12 @@ export function HomePage() {
   if (!isConfigured) {
     return (
       <div className="home-page">
-        <div className="home-card">
+        <div className="home-card card-glass">
+          <div className="home-logo">🎯</div>
           <h1>Killer Game</h1>
+          <p className="subtitle">Assassination party game</p>
           <div className="offline-notice">
-            <h3>Database Not Configured</h3>
+            <h3>⚠️ Database Not Configured</h3>
             <p>To enable online multiplayer:</p>
             <ol>
               <li>Create a free Supabase account at <a href="https://supabase.com" target="_blank" rel="noopener">supabase.com</a></li>
@@ -59,43 +61,45 @@ export function HomePage() {
 
   return (
     <div className="home-page">
-      <div className="home-card">
+      <div className="home-card card-glass">
+        <div className="home-logo">🎯</div>
         <h1>Killer Game</h1>
-        <p className="subtitle">Assassination party game manager</p>
+        <p className="subtitle">Assassination party game</p>
 
         {error && (
           <div className="error-banner">
-            {error}
-            <button onClick={clearError}>&times;</button>
+            <span>{error}</span>
+            <button onClick={clearError}>✕</button>
           </div>
         )}
 
         {mode === 'choose' && (
           <div className="home-buttons">
             <button className="btn-primary btn-large" onClick={() => setMode('create')}>
-              Create New Game
+              🎮 Create New Game
             </button>
             <button className="btn-secondary btn-large" onClick={() => setMode('join')}>
-              Join Existing Game
+              🔗 Join Existing Game
             </button>
           </div>
         )}
 
         {mode === 'create' && (
           <form onSubmit={handleCreateGame} className="home-form">
-            <h3>Create New Game</h3>
-            <label>
-              Game Title
+            <h3>🎮 Create New Game</h3>
+            <div className="input-group">
+              <label>Game Name</label>
               <input
                 type="text"
                 value={gameTitle}
                 onChange={(e) => setGameTitle(e.target.value)}
-                placeholder="e.g., Birthday Party Killer"
+                placeholder="e.g., Birthday Party"
+                autoFocus
                 required
               />
-            </label>
-            <label>
-              Admin Password
+            </div>
+            <div className="input-group">
+              <label>Admin Password</label>
               <input
                 type="password"
                 value={adminPassword}
@@ -104,13 +108,13 @@ export function HomePage() {
                 required
               />
               <span className="hint">You'll need this to manage the game</span>
-            </label>
+            </div>
             <div className="form-buttons">
               <button type="button" className="btn-secondary" onClick={() => setMode('choose')}>
-                Back
+                ← Back
               </button>
               <button type="submit" className="btn-primary" disabled={isLoading}>
-                {isLoading ? 'Creating...' : 'Create Game'}
+                {isLoading ? '⏳ Creating...' : '✨ Create Game'}
               </button>
             </div>
           </form>
@@ -118,25 +122,35 @@ export function HomePage() {
 
         {mode === 'join' && (
           <form onSubmit={handleJoinGame} className="home-form">
-            <h3>Join Game</h3>
-            <label>
-              Game Code
+            <h3>🔗 Join Game</h3>
+            <div className="input-group">
+              <label>Enter Game Code</label>
               <input
                 type="text"
                 value={gameCode}
                 onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-                placeholder="Enter 6-character code"
+                placeholder="XXXXXX"
                 maxLength={6}
-                style={{ textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '24px', textAlign: 'center' }}
+                className="game-code-input"
+                style={{
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.2em',
+                  fontSize: '28px',
+                  textAlign: 'center',
+                  fontFamily: "'SF Mono', Monaco, monospace",
+                  fontWeight: 700
+                }}
+                autoFocus
                 required
               />
-            </label>
+              <span className="hint">Ask the game master for the code</span>
+            </div>
             <div className="form-buttons">
               <button type="button" className="btn-secondary" onClick={() => setMode('choose')}>
-                Back
+                ← Back
               </button>
-              <button type="submit" className="btn-primary" disabled={isLoading}>
-                {isLoading ? 'Joining...' : 'Join Game'}
+              <button type="submit" className="btn-primary" disabled={isLoading || gameCode.length !== 6}>
+                {isLoading ? '⏳ Joining...' : '🚀 Join Game'}
               </button>
             </div>
           </form>
