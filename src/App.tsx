@@ -1,20 +1,33 @@
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HomePage } from './components/HomePage';
+import { OnlineAdminPage } from './components/OnlineAdminPage';
+import { PlayerPage } from './components/PlayerPage';
 import { AdminPage } from './components/admin/AdminPage';
 import { PublicPage } from './components/public/PublicPage';
 import './App.css';
 
 function Navigation() {
   const location = useLocation();
-  const isAdmin = location.pathname === '/admin';
+  const path = location.pathname;
+
+  // Don't show nav on home page
+  if (path === '/') return null;
 
   return (
     <nav className="main-nav">
-      <Link to="/" className={!isAdmin ? 'active' : ''}>
-        Player View
+      <Link to="/" className="nav-home">
+        Killer Game
       </Link>
-      <Link to="/admin" className={isAdmin ? 'active' : ''}>
-        Admin
-      </Link>
+      {path.startsWith('/offline') && (
+        <>
+          <Link to="/offline" className={path === '/offline' ? 'active' : ''}>
+            Player View
+          </Link>
+          <Link to="/offline/admin" className={path === '/offline/admin' ? 'active' : ''}>
+            Admin
+          </Link>
+        </>
+      )}
     </nav>
   );
 }
@@ -26,8 +39,14 @@ function App() {
         <Navigation />
         <main>
           <Routes>
-            <Route path="/" element={<PublicPage />} />
-            <Route path="/admin" element={<AdminPage />} />
+            {/* Online mode (with Supabase) */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/admin" element={<OnlineAdminPage />} />
+            <Route path="/play" element={<PlayerPage />} />
+
+            {/* Offline mode (localStorage only) */}
+            <Route path="/offline" element={<PublicPage />} />
+            <Route path="/offline/admin" element={<AdminPage />} />
           </Routes>
         </main>
       </div>
