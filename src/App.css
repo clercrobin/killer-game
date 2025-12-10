@@ -1,0 +1,575 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --danger: #dc2626;
+  --success: #16a34a;
+  --bg: #f5f5f7;
+  --card-bg: #ffffff;
+  --text: #1f2937;
+  --text-secondary: #6b7280;
+  --border: #e5e7eb;
+  --radius: 12px;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navigation */
+.main-nav {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.main-nav a {
+  padding: 8px 16px;
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.main-nav a:hover {
+  background: var(--bg);
+}
+
+.main-nav a.active {
+  background: var(--primary);
+  color: white;
+}
+
+main {
+  flex: 1;
+  padding: 16px;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Cards */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.card h3 {
+  margin: 0 0 16px;
+  font-size: 18px;
+}
+
+.card h4 {
+  margin: 16px 0 8px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Buttons */
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+}
+
+.btn-secondary {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+}
+
+.btn-danger {
+  background: var(--danger);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+}
+
+.btn-large {
+  padding: 12px 24px;
+  font-size: 16px;
+}
+
+.btn-small {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Forms */
+input, select, textarea {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+input[type="color"] {
+  width: 40px;
+  height: 36px;
+  padding: 2px;
+  cursor: pointer;
+}
+
+textarea {
+  resize: vertical;
+  width: 100%;
+}
+
+.add-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.bulk-import {
+  margin-bottom: 16px;
+}
+
+.bulk-import textarea {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+/* Lists */
+.group-list, .player-list, .challenge-list, .couple-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.group-item, .player-item, .challenge-item, .couple-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.group-item input[type="text"],
+.player-item input[type="text"] {
+  flex: 1;
+}
+
+.challenge-item {
+  align-items: flex-start;
+}
+
+.challenge-item textarea {
+  flex: 1;
+}
+
+.challenge-number {
+  font-weight: 600;
+  color: var(--text-secondary);
+  min-width: 30px;
+}
+
+.player-count {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.color-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin: 4px 0;
+}
+
+.empty-message {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Players by group */
+.players-by-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.player-group h4 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+/* Admin page */
+.admin-login {
+  max-width: 300px;
+  margin: 100px auto;
+  text-align: center;
+}
+
+.admin-login form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.admin-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+.tab {
+  background: var(--card-bg);
+  padding: 10px 20px;
+  border-radius: 8px 8px 0 0;
+  border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+  border-bottom-color: var(--primary);
+  color: var(--primary);
+}
+
+/* Game manager */
+.config-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.config-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.config-form input[type="text"],
+.config-form input[type="password"] {
+  max-width: 400px;
+}
+
+.game-status {
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+}
+
+.game-status p {
+  margin: 4px 0;
+}
+
+.game-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.import-section {
+  margin-top: 16px;
+}
+
+.import-section textarea {
+  margin-bottom: 8px;
+}
+
+/* Ring visualization */
+.ring-visualization {
+  margin-top: 24px;
+}
+
+.ring-display {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ring-node {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg);
+  border-radius: 8px;
+  border-left: 3px solid;
+  font-size: 12px;
+}
+
+.ring-node.eliminated {
+  opacity: 0.4;
+  text-decoration: line-through;
+}
+
+.ring-index {
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* Assignments table */
+.assignments-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.assignments-table th,
+.assignments-table td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.assignments-table th {
+  background: var(--bg);
+  font-weight: 600;
+}
+
+.challenge-cell {
+  max-width: 300px;
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.eliminated-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eliminated-player {
+  padding: 4px 8px;
+  background: var(--bg);
+  border-radius: 4px;
+  font-size: 12px;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* Public page */
+.public-page {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.player-lookup {
+  text-align: center;
+}
+
+.player-lookup h2 {
+  margin-bottom: 24px;
+}
+
+.not-started {
+  padding: 40px 20px;
+}
+
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-input {
+  font-size: 18px;
+  padding: 14px 20px;
+  text-align: center;
+}
+
+.search-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.search-result-item {
+  padding: 12px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: left;
+  font-size: 16px;
+}
+
+.search-result-item:hover {
+  background: var(--bg);
+  border-color: var(--primary);
+}
+
+.no-results {
+  color: var(--text-secondary);
+}
+
+/* Assignment display */
+.assignment-display {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.player-card, .target-card, .challenge-card, .rules-reminder {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  text-align: left;
+}
+
+.player-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.group-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.player-card h3 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.target-card h4,
+.challenge-card h4,
+.rules-reminder h4 {
+  margin: 0 0 8px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.target-name {
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--danger);
+}
+
+.challenge-text {
+  font-size: 16px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.rules-reminder ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.rules-reminder li {
+  margin: 4px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.eliminated-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 40px 20px;
+  border: 2px solid var(--danger);
+}
+
+.eliminated-card h3 {
+  color: var(--danger);
+  margin: 0 0 8px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .admin-tabs {
+    gap: 2px;
+  }
+
+  .tab {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .assignments-table {
+    font-size: 11px;
+  }
+
+  .assignments-table th,
+  .assignments-table td {
+    padding: 6px 4px;
+  }
+
+  .challenge-cell {
+    max-width: 150px;
+  }
+}
