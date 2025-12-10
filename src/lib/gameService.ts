@@ -338,11 +338,12 @@ export async function createAssignments(gameId: string, assignments: { playerId:
   if (error) throw error;
 }
 
-export async function updateAssignment(gameId: string, playerId: string, updates: { targetId?: string; completed?: boolean; completedAt?: string }): Promise<void> {
+export async function updateAssignment(gameId: string, playerId: string, updates: { targetId?: string; challengeId?: string; completed?: boolean; completedAt?: string }): Promise<void> {
   if (!supabase) throw new Error('Supabase not configured');
 
-  const dbUpdates: { target_id?: string; completed?: boolean; completed_at?: string } = {};
+  const dbUpdates: { target_id?: string; challenge_id?: string; completed?: boolean; completed_at?: string } = {};
   if (updates.targetId) dbUpdates.target_id = updates.targetId;
+  if (updates.challengeId) dbUpdates.challenge_id = updates.challengeId;
   if (updates.completed !== undefined) dbUpdates.completed = updates.completed;
   if (updates.completedAt) dbUpdates.completed_at = updates.completedAt;
 

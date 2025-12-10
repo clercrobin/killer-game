@@ -409,10 +409,10 @@ export const useOnlineGameStore = create<OnlineGameState>((set, get) => ({
       if (!hunterAssignment || !eliminatedAssignment) return;
 
       // Update hunter's assignment - they now target the eliminated player's target
+      // and inherit the eliminated player's challenge
       await gameService.updateAssignment(game.id, hunterAssignment.playerId, {
         targetId: eliminatedAssignment.targetId,
-        completed: true,
-        completedAt: new Date().toISOString(),
+        challengeId: eliminatedAssignment.challengeId,
       });
 
       // Mark eliminated player's assignment as completed
@@ -426,7 +426,11 @@ export const useOnlineGameStore = create<OnlineGameState>((set, get) => ({
       set(state => ({
         assignments: state.assignments.map(a => {
           if (a.playerId === hunterAssignment.playerId) {
-            return { ...a, targetId: eliminatedAssignment.targetId, completed: true, completedAt: now };
+            return {
+              ...a,
+              targetId: eliminatedAssignment.targetId,
+              challengeId: eliminatedAssignment.challengeId,
+            };
           }
           if (a.playerId === eliminatedPlayerId) {
             return { ...a, completed: true, completedAt: now };
