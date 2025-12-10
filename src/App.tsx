@@ -10,24 +10,17 @@ function Navigation() {
   const location = useLocation();
   const path = location.pathname;
 
-  // Don't show nav on home page
-  if (path === '/') return null;
+  // Only show nav for offline mode
+  if (!path.startsWith('/offline')) return null;
 
   return (
     <nav className="main-nav">
-      <Link to="/" className="nav-home">
-        Killer Game
+      <Link to="/offline" className={path === '/offline' ? 'active' : ''}>
+        Player View
       </Link>
-      {path.startsWith('/offline') && (
-        <>
-          <Link to="/offline" className={path === '/offline' ? 'active' : ''}>
-            Player View
-          </Link>
-          <Link to="/offline/admin" className={path === '/offline/admin' ? 'active' : ''}>
-            Admin
-          </Link>
-        </>
-      )}
+      <Link to="/offline/admin" className={path === '/offline/admin' ? 'active' : ''}>
+        Admin
+      </Link>
     </nav>
   );
 }
