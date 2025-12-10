@@ -69,18 +69,28 @@ function coupleDistanceScore(
   const idx = new Map<string, number>();
   order.forEach((p, i) => idx.set(p.id, i));
 
+  let totalDist = 0;
   let minDist = n;
+  const maxPossibleDist = Math.floor(n / 2); // Max distance in a ring
 
   for (const couple of couples) {
     const iA = idx.get(couple.player1Id);
     const iB = idx.get(couple.player2Id);
     if (iA === undefined || iB === undefined) continue;
 
+    // Distance in a ring (shortest path around circle)
     const dist = Math.min(Math.abs(iA - iB), n - Math.abs(iA - iB));
+    totalDist += dist;
     if (dist < minDist) minDist = dist;
   }
 
-  return minDist / (n / 2);
+  // Score based on: average distance + bonus for minimum distance
+  // Both normalized to 0-1 range
+  const avgScore = totalDist / (couples.length * maxPossibleDist);
+  const minScore = minDist / maxPossibleDist;
+
+  // Weight minimum distance more heavily to ensure no couple is too close
+  return (avgScore * 0.4) + (minScore * 0.6);
 }
 
 function isValidRing(
@@ -115,7 +125,8 @@ export function generateRingAssignments(
 
     const coupleScore = coupleDistanceScore(order, couples, n);
     const spreadScore = groupSpreadScore(order, n);
-    const score = coupleScore * 100 + spreadScore * spreadTarget * 50;
+    // Prioritize couple distance (200) over group spread (50)
+    const score = coupleScore * 200 + spreadScore * spreadTarget * 50;
 
     if (score > bestScore) {
       bestScore = score;
