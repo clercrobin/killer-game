@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { HomePage } from './components/HomePage';
 import { OnlineAdminPage } from './components/OnlineAdminPage';
 import { PlayerPage } from './components/PlayerPage';
@@ -27,7 +27,7 @@ function Navigation() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <div className="app">
         <Navigation />
         <main>
@@ -43,7 +43,7 @@ function App() {
           </Routes>
         </main>
       </div>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
