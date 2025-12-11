@@ -238,21 +238,15 @@ export function OnlineAdminPage() {
         {tabs.map(tab => (
           <button
             key={tab.id}
-            className={`tab ${activeTab === tab.id ? 'active' : ''}`}
+            className={`tab ${activeTab === tab.id ? 'active' : ''} ${tab.badge && tab.badge > 0 ? 'has-badge' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            {tab.icon} {tab.label}
+            <span className="tab-content">
+              {tab.icon}
+              <span className="tab-label">{tab.label}</span>
+            </span>
             {tab.badge && tab.badge > 0 && (
-              <span style={{
-                marginLeft: '6px',
-                background: '#ef4444',
-                color: 'white',
-                borderRadius: '10px',
-                padding: '2px 8px',
-                fontSize: '12px',
-              }}>
-                {tab.badge}
-              </span>
+              <span className="tab-badge">{tab.badge}</span>
             )}
           </button>
         ))}
